@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react'; //React, 
 import { useAuth } from '../../contexts/AuthContext';
 import Sidebar from './Sidebar';
 import Overview from './Overview';
@@ -8,6 +8,7 @@ import Quiz from './Quiz';
 import MockInterview from './MockInterview';
 import Progress from './Progress';
 import Profile from './Profile';
+import Chatbot from './Chatbot';
 
 export default function Dashboard() {
   const [activeSection, setActiveSection] = useState('overview');
@@ -50,6 +51,7 @@ export default function Dashboard() {
           {renderContent()}
         </div>
       </main>
+      <Chatbot/>
     </div>
   );
 }
