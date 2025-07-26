@@ -30,13 +30,19 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Simulate loading user from localStorage
-    const savedUser = localStorage.getItem('user');
-    if (savedUser) {
+  // Simulate loading user from localStorage
+  const savedUser = localStorage.getItem('user');
+  if (savedUser && savedUser !== "undefined") {
+    try {
       setUser(JSON.parse(savedUser));
+    } catch (err) {
+      console.error('Failed to parse user from localStorage:', err);
+      localStorage.removeItem('user');
     }
-    setLoading(false);
-  }, []);
+  }
+  setLoading(false);
+}, []);
+
 
   const login = async (email: string, password: string): Promise<boolean> => {
     // Mock login - in real app, this would call your Python backend
