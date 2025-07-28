@@ -31,10 +31,10 @@ export default function LoginPage() {
     }
   };
 
-  const demoCredentials = [
-    { role: 'Employee', email: 'employee@company.com', password: 'employee123' },
-    { role: 'Admin', email: 'admin@company.com', password: 'admin123' }
-  ];
+  // const demoCredentials = [
+  //   { role: 'Employee', email: 'employee@company.com', password: 'employee123' },
+  //   { role: 'Admin', email: 'admin@company.com', password: 'admin123' }
+  // ];
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-600 via-purple-600 to-indigo-700 flex items-center justify-center p-4">
@@ -44,7 +44,7 @@ export default function LoginPage() {
             <User className="w-8 h-8 text-white" />
           </div>
           <h1 className="text-3xl font-bold text-gray-900 mb-2">
-            SkillForge
+            SkillArise
           </h1>
           <p className="text-gray-600">
             Personalized Learning & Skill Analysis
@@ -129,7 +129,7 @@ export default function LoginPage() {
           </button>
         </div>
 
-        <div className="mt-8 pt-6 border-t border-gray-200">
+        {/* <div className="mt-8 pt-6 border-t border-gray-200">
           <p className="text-sm text-gray-600 mb-3 text-center">Demo Credentials:</p>
           <div className="space-y-2">
             {demoCredentials.map((cred, index) => (
@@ -139,7 +139,7 @@ export default function LoginPage() {
               </div>
             ))}
           </div>
-        </div>
+        </div> */}
       </div>
     </div>
   );

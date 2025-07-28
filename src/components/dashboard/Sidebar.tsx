@@ -38,7 +38,7 @@ export default function Sidebar({ activeSection, setActiveSection }: SidebarProp
             <Award className="w-6 h-6 text-white" />
           </div>
           <div>
-            <h2 className="font-bold text-gray-900 dark:text-white">SkillForge</h2>
+            <h2 className="font-bold text-gray-900 dark:text-white">SkillArise</h2>
             <div className="flex items-center space-x-2">
               <span className="text-sm text-blue-600 font-medium">Level {user?.level}</span>
               <span className="text-sm text-gray-500 dark:text-gray-400">•</span>
