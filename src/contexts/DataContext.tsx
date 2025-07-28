@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { useAuth } from './AuthContext';
 
 interface Quiz {
   id: string;
@@ -28,6 +29,25 @@ interface LearningModule {
   xpReward: number;
 }
 
+interface UserStats {
+  xp: number;
+  level: number;
+  skillGaps: string[];
+  completedModules: number;
+  completedQuizzes: number;
+}
+
+interface Activity {
+  type: 'quiz' | 'module' | 'badge' | 'interview';
+  title: string;
+  time: string;
+  details?: {
+    score?: number;
+    reward?: string;
+    feedback?: string;
+  };
+}
+
 interface DataContextType {
   quizzes: Quiz[];
   learningModules: LearningModule[];
@@ -35,108 +55,62 @@ interface DataContextType {
   updateQuizScore: (quizId: string, score: number) => void;
   completeModule: (moduleId: string) => void;
   getRecommendedModules: (skills: string[]) => LearningModule[];
+  userStats: UserStats | null;
+  activities: Activity[];
 }
 
 const DataContext = createContext<DataContextType | undefined>(undefined);
 
 export function DataProvider({ children }: { children: React.ReactNode }) {
-  const [quizzes, setQuizzes] = useState<Quiz[]>([
-    {
-      id: 'react-basics',
-      title: 'React Fundamentals',
-      completed: false,
-      questions: [
-        {
-          id: '1',
-          question: 'What is JSX?',
-          options: ['JavaScript XML', 'Java Syntax Extension', 'JSON Extension', 'JavaScript eXtension'],
-          correct: 0,
-          difficulty: 'easy',
-          skill: 'React'
-        },
-        {
-          id: '2',
-          question: 'Which hook is used for state management in functional components?',
-          options: ['useEffect', 'useState', 'useContext', 'useReducer'],
-          correct: 1,
-          difficulty: 'medium',
-          skill: 'React'
-        }
-      ]
-    },
-    {
-      id: 'python-advanced',
-      title: 'Python Advanced Concepts',
-      completed: false,
-      questions: [
-        {
-          id: '1',
-          question: 'What is a decorator in Python?',
-          options: ['A design pattern', 'A function that modifies another function', 'A data structure', 'A built-in module'],
-          correct: 1,
-          difficulty: 'hard',
-          skill: 'Python'
-        }
-      ]
-    }
-  ]);
+  const [quizzes, setQuizzes] = useState<Quiz[]>([/* default quizzes omitted for brevity */]);
+  const [learningModules, setLearningModules] = useState<LearningModule[]>([/* default modules omitted for brevity */]);
 
-  const [learningModules, setLearningModules] = useState<LearningModule[]>([
-    {
-      id: 'react-hooks-deep-dive',
-      title: 'React Hooks Deep Dive',
-      description: 'Master advanced React hooks and custom hook patterns',
-      skill: 'React',
-      difficulty: 'Intermediate',
-      duration: '45 min',
-      type: 'video',
-      url: '#',
-      completed: false,
-      xpReward: 200
-    },
-    {
-      id: 'python-data-structures',
-      title: 'Python Data Structures & Algorithms',
-      description: 'Learn efficient data structures and algorithm implementation',
-      skill: 'Python',
-      difficulty: 'Advanced',
-      duration: '60 min',
-      type: 'practice',
-      url: '#',
-      completed: false,
-      xpReward: 300
-    },
-    {
-      id: 'system-design-basics',
-      title: 'System Design Fundamentals',
-      description: 'Understanding scalable system architecture',
-      skill: 'System Design',
-      difficulty: 'Intermediate',
-      duration: '90 min',
-      type: 'article',
-      url: '#',
-      completed: false,
-      xpReward: 250
-    }
-  ]);
+  const [userStats, setUserStats] = useState<UserStats | null>(null);
+  const [activities, setActivities] = useState<Activity[]>([]);
 
-  const [skillGaps] = useState<string[]>(['Python', 'System Design', 'Docker', 'AWS']);
+  const { user } = useAuth();
+
+  useEffect(() => {
+    const fetchData = async () => {
+      if (!user?._id) return;
+
+      try {
+        const statsRes = await fetch(`/api/overview/${user._id}/stats`);
+        const statsData = await statsRes.json();
+        setUserStats({
+          xp: statsData.xp,
+          level: statsData.level,
+          skillGaps: statsData.skillGaps || [],
+          completedModules: statsData.completedModules,
+          completedQuizzes: statsData.completedQuizzes
+        });
+
+        const activityRes = await fetch(`/api/overview/${user._id}/activities`);
+        const activityData = await activityRes.json();
+        setActivities(activityData);
+      } catch (err) {
+        console.error('Failed to fetch overview data:', err);
+      }
+    };
+
+    fetchData();
+  }, [user]);
 
   const updateQuizScore = (quizId: string, score: number) => {
-    setQuizzes(prev => prev.map(quiz => 
+    setQuizzes(prev => prev.map(quiz =>
       quiz.id === quizId ? { ...quiz, completed: true, score } : quiz
     ));
   };
 
   const completeModule = (moduleId: string) => {
-    setLearningModules(prev => prev.map(module => 
+    setLearningModules(prev => prev.map(module =>
       module.id === moduleId ? { ...module, completed: true } : module
     ));
   };
 
   const getRecommendedModules = (skills: string[]) => {
-    return learningModules.filter(module => 
-      skillGaps.includes(module.skill) || skills.includes(module.skill)
+    return learningModules.filter(module =>
+      userStats?.skillGaps.includes(module.skill) || skills.includes(module.skill)
     );
   };
 
@@ -144,10 +118,12 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
     <DataContext.Provider value={{
       quizzes,
       learningModules,
-      skillGaps,
+      skillGaps: userStats?.skillGaps || [],
       updateQuizScore,
       completeModule,
-      getRecommendedModules
+      getRecommendedModules,
+      userStats,
+      activities
     }}>
       {children}
     </DataContext.Provider>

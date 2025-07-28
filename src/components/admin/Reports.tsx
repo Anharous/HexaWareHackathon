@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState } from 'react'; 
 import {
   FileText,
   Download,
@@ -73,7 +73,6 @@ export default function Reports() {
   const currentReport = reportData[selectedReport as keyof typeof reportData] || reportData.overview;
 
   const generateReport = () => {
-    // Simulate report generation
     alert(`Generating ${currentReport.title} for ${selectedPeriod}...`);
   };
 
@@ -81,8 +80,8 @@ export default function Reports() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-bold text-gray-900">Reports & Analytics</h2>
-          <p className="text-gray-600">Generate detailed reports on platform performance</p>
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Reports & Analytics</h2>
+          <p className="text-gray-600 dark:text-gray-400">Generate detailed reports on platform performance</p>
         </div>
         <button
           onClick={generateReport}
@@ -94,10 +93,10 @@ export default function Reports() {
       </div>
 
       {/* Report Controls */}
-      <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+      <div className="bg-white dark:bg-gray-900 p-6 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-3">Report Type</label>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">Report Type</label>
             <div className="grid grid-cols-1 gap-2">
               {reportTypes.map((type) => {
                 const IconComponent = type.icon;
@@ -107,8 +106,8 @@ export default function Reports() {
                     onClick={() => setSelectedReport(type.id)}
                     className={`flex items-center space-x-3 p-3 rounded-lg border transition-all ${
                       selectedReport === type.id
-                        ? 'border-blue-500 bg-blue-50 text-blue-700'
-                        : 'border-gray-200 hover:border-gray-300'
+                        ? 'border-blue-500 bg-blue-50 text-blue-700 dark:bg-blue-950 dark:text-blue-300'
+                        : 'border-gray-200 hover:border-gray-300 dark:border-gray-700 dark:hover:border-gray-600 dark:text-gray-300'
                     }`}
                   >
                     <IconComponent className="w-5 h-5" />
@@ -120,7 +119,7 @@ export default function Reports() {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-3">Time Period</label>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">Time Period</label>
             <div className="space-y-2">
               {[
                 { id: 'last7', name: 'Last 7 days' },
@@ -134,8 +133,8 @@ export default function Reports() {
                   onClick={() => setSelectedPeriod(period.id)}
                   className={`w-full flex items-center space-x-3 p-3 rounded-lg border transition-all ${
                     selectedPeriod === period.id
-                      ? 'border-blue-500 bg-blue-50 text-blue-700'
-                      : 'border-gray-200 hover:border-gray-300'
+                      ? 'border-blue-500 bg-blue-50 text-blue-700 dark:bg-blue-950 dark:text-blue-300'
+                      : 'border-gray-200 hover:border-gray-300 dark:border-gray-700 dark:hover:border-gray-600 dark:text-gray-300'
                   }`}
                 >
                   <Calendar className="w-5 h-5" />
@@ -148,10 +147,10 @@ export default function Reports() {
       </div>
 
       {/* Report Preview */}
-      <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+      <div className="bg-white dark:bg-gray-900 p-6 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
         <div className="flex items-center justify-between mb-6">
-          <h3 className="text-lg font-semibold text-gray-900">{currentReport.title}</h3>
-          <div className="flex items-center space-x-2 text-sm text-gray-500">
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-white">{currentReport.title}</h3>
+          <div className="flex items-center space-x-2 text-sm text-gray-500 dark:text-gray-400">
             <Calendar className="w-4 h-4" />
             <span>Last 30 days</span>
           </div>
@@ -160,9 +159,9 @@ export default function Reports() {
         {/* Key Metrics */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
           {currentReport.metrics.map((metric, index) => (
-            <div key={index} className="bg-gradient-to-br from-blue-50 to-indigo-50 p-4 rounded-lg border border-blue-200">
-              <p className="text-sm font-medium text-blue-800">{metric.label}</p>
-              <p className="text-2xl font-bold text-blue-900 mt-2">{metric.value}</p>
+            <div key={index} className="bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-950 dark:to-indigo-950 p-4 rounded-lg border border-blue-200 dark:border-blue-800">
+              <p className="text-sm font-medium text-blue-800 dark:text-blue-300">{metric.label}</p>
+              <p className="text-2xl font-bold text-blue-900 dark:text-blue-100 mt-2">{metric.value}</p>
               <p className={`text-sm mt-1 ${
                 metric.change.startsWith('+') ? 'text-green-600' : 'text-red-600'
               }`}>
@@ -174,12 +173,12 @@ export default function Reports() {
 
         {/* Key Insights */}
         <div>
-          <h4 className="text-md font-semibold text-gray-900 mb-4">Key Insights</h4>
+          <h4 className="text-md font-semibold text-gray-900 dark:text-white mb-4">Key Insights</h4>
           <div className="space-y-3">
             {currentReport.insights.map((insight, index) => (
-              <div key={index} className="flex items-start space-x-3 p-3 bg-gray-50 rounded-lg">
+              <div key={index} className="flex items-start space-x-3 p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
                 <div className="w-2 h-2 bg-blue-500 rounded-full mt-2"></div>
-                <p className="text-gray-700">{insight}</p>
+                <p className="text-gray-700 dark:text-gray-300">{insight}</p>
               </div>
             ))}
           </div>
@@ -187,28 +186,28 @@ export default function Reports() {
       </div>
 
       {/* Export Options */}
-      <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">Export Options</h3>
+      <div className="bg-white dark:bg-gray-900 p-6 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
+        <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Export Options</h3>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <button className="flex items-center justify-center space-x-2 p-4 border border-gray-300 rounded-lg hover:border-blue-500 hover:bg-blue-50 transition-all">
+          <button className="flex items-center justify-center space-x-2 p-4 border border-gray-300 dark:border-gray-600 rounded-lg hover:border-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900 transition-all">
             <FileText className="w-5 h-5 text-blue-600" />
-            <span className="font-medium">Export as PDF</span>
+            <span className="font-medium dark:text-gray-200">Export as PDF</span>
           </button>
-          <button className="flex items-center justify-center space-x-2 p-4 border border-gray-300 rounded-lg hover:border-green-500 hover:bg-green-50 transition-all">
+          <button className="flex items-center justify-center space-x-2 p-4 border border-gray-300 dark:border-gray-600 rounded-lg hover:border-green-500 hover:bg-green-50 dark:hover:bg-green-900 transition-all">
             <FileText className="w-5 h-5 text-green-600" />
-            <span className="font-medium">Export as Excel</span>
+            <span className="font-medium dark:text-gray-200">Export as Excel</span>
           </button>
-          <button className="flex items-center justify-center space-x-2 p-4 border border-gray-300 rounded-lg hover:border-purple-500 hover:bg-purple-50 transition-all">
+          <button className="flex items-center justify-center space-x-2 p-4 border border-gray-300 dark:border-gray-600 rounded-lg hover:border-purple-500 hover:bg-purple-50 dark:hover:bg-purple-900 transition-all">
             <FileText className="w-5 h-5 text-purple-600" />
-            <span className="font-medium">Export as CSV</span>
+            <span className="font-medium dark:text-gray-200">Export as CSV</span>
           </button>
         </div>
       </div>
 
       {/* Scheduled Reports */}
-      <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+      <div className="bg-white dark:bg-gray-900 p-6 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
         <div className="flex items-center justify-between mb-4">
-          <h3 className="text-lg font-semibold text-gray-900">Scheduled Reports</h3>
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Scheduled Reports</h3>
           <button className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors">
             Add Schedule
           </button>
@@ -220,16 +219,16 @@ export default function Reports() {
             { name: 'Monthly Learning Progress', frequency: 'First of each month', next: 'Jan 1, 2025' },
             { name: 'Quarterly Performance Review', frequency: 'Every 3 months', next: 'Mar 1, 2025' }
           ].map((schedule, index) => (
-            <div key={index} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+            <div key={index} className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
               <div>
-                <p className="font-medium text-gray-900">{schedule.name}</p>
-                <p className="text-sm text-gray-500">{schedule.frequency} • Next: {schedule.next}</p>
+                <p className="font-medium text-gray-900 dark:text-white">{schedule.name}</p>
+                <p className="text-sm text-gray-500 dark:text-gray-400">{schedule.frequency} • Next: {schedule.next}</p>
               </div>
               <div className="flex space-x-2">
-                <button className="px-3 py-1 text-blue-600 hover:bg-blue-50 rounded transition-colors text-sm">
+                <button className="px-3 py-1 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900 rounded transition-colors text-sm">
                   Edit
                 </button>
-                <button className="px-3 py-1 text-red-600 hover:bg-red-50 rounded transition-colors text-sm">
+                <button className="px-3 py-1 text-red-600 hover:bg-red-50 dark:hover:bg-red-900 rounded transition-colors text-sm">
                   Delete
                 </button>
               </div>

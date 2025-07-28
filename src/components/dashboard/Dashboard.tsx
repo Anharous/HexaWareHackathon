@@ -1,4 +1,4 @@
-import { useState } from 'react'; //React, 
+import { useEffect, useState } from 'react'; //React, 
 import { useAuth } from '../../contexts/AuthContext';
 import Sidebar from './Sidebar';
 import Overview from './Overview';
@@ -13,6 +13,20 @@ import Chatbot from './Chatbot';
 export default function Dashboard() {
   const [activeSection, setActiveSection] = useState('overview');
   const { user } = useAuth();
+  const [theme, setTheme] = useState(() => localStorage.getItem('theme') || 'light');
+    useEffect(() => {
+    const root = window.document.documentElement;
+    if (theme === 'dark') {
+      root.classList.add('dark');
+    } else {
+      root.classList.remove('dark');
+    }
+    localStorage.setItem('theme', theme); // Save preference
+  }, [theme]);
+
+  const toggleTheme = () => {
+    setTheme(prev => (prev === 'light' ? 'dark' : 'light'));
+  };
 
   const renderContent = () => {
     switch (activeSection) {
@@ -36,22 +50,29 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="flex h-screen bg-gray-50">
+    <div className="flex h-screen bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
       <Sidebar activeSection={activeSection} setActiveSection={setActiveSection} />
       <main className="flex-1 overflow-auto">
         <div className="p-6">
-          <div className="mb-6">
-            <h1 className="text-2xl font-bold text-gray-900">
-              Welcome back, {user?.name}!
-            </h1>
-            <p className="text-gray-600">
-              Continue your learning journey and track your progress
-            </p>
+          <div className="mb-6 flex justify-between items-center">
+            <div>
+              <h1 className="text-2xl font-bold">Welcome back, {user?.name}!</h1>
+              <p className="text-gray-600 dark:text-gray-300">
+                Continue your learning journey and track your progress
+              </p>
+            </div>
+            <button
+             onClick={toggleTheme}
+              className="text-2xl bg-gray-200 dark:bg-gray-700 text-black dark:text-white p-2 rounded-full hover:scale-105 transition-all"
+              title="Toggle Theme"
+            >
+              {theme === 'light' ? '🌙' : '☀️'}
+            </button>
           </div>
           {renderContent()}
         </div>
       </main>
-      <Chatbot/>
+      <Chatbot />
     </div>
   );
 }

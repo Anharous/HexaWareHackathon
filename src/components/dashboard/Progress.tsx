@@ -44,17 +44,15 @@ export default function Progress() {
   ];
 
   const generateCertificate = () => {
-    // This would generate a PDF certificate
-    // For now, we'll just show an alert
     alert('Certificate generated! In a real app, this would download a PDF certificate.');
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 text-gray-900 dark:text-gray-100">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-bold text-gray-900">Learning Progress</h2>
-          <p className="text-gray-600">Track your journey and celebrate achievements</p>
+          <h2 className="text-2xl font-bold">Learning Progress</h2>
+          <p className="text-gray-600 dark:text-gray-400">Track your journey and celebrate achievements</p>
         </div>
         <button
           onClick={generateCertificate}
@@ -67,41 +65,41 @@ export default function Progress() {
 
       {/* Overall Stats */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <div className="bg-gradient-to-br from-blue-50 to-indigo-50 p-6 rounded-xl border border-blue-200">
+        <div className="bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-900 dark:to-indigo-900 p-6 rounded-xl border border-blue-200 dark:border-blue-700">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-blue-800">Current Level</p>
-              <p className="text-3xl font-bold text-blue-900 mt-2">{user?.level || 1}</p>
+              <p className="text-sm font-medium text-blue-800 dark:text-blue-300">Current Level</p>
+              <p className="text-3xl font-bold text-blue-900 dark:text-white mt-2">{user?.level || 1}</p>
             </div>
             <Award className="w-8 h-8 text-blue-600" />
           </div>
         </div>
 
-        <div className="bg-gradient-to-br from-purple-50 to-pink-50 p-6 rounded-xl border border-purple-200">
+        <div className="bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-900 dark:to-pink-900 p-6 rounded-xl border border-purple-200 dark:border-purple-700">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-purple-800">Total XP</p>
-              <p className="text-3xl font-bold text-purple-900 mt-2">{user?.xp || 0}</p>
+              <p className="text-sm font-medium text-purple-800 dark:text-purple-300">Total XP</p>
+              <p className="text-3xl font-bold text-purple-900 dark:text-white mt-2">{user?.xp || 0}</p>
             </div>
             <Star className="w-8 h-8 text-purple-600" />
           </div>
         </div>
 
-        <div className="bg-gradient-to-br from-green-50 to-emerald-50 p-6 rounded-xl border border-green-200">
+        <div className="bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-900 dark:to-emerald-900 p-6 rounded-xl border border-green-200 dark:border-green-700">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-green-800">Modules Done</p>
-              <p className="text-3xl font-bold text-green-900 mt-2">{completedModules.length}</p>
+              <p className="text-sm font-medium text-green-800 dark:text-green-300">Modules Done</p>
+              <p className="text-3xl font-bold text-green-900 dark:text-white mt-2">{completedModules.length}</p>
             </div>
             <BookOpen className="w-8 h-8 text-green-600" />
           </div>
         </div>
 
-        <div className="bg-gradient-to-br from-yellow-50 to-orange-50 p-6 rounded-xl border border-yellow-200">
+        <div className="bg-gradient-to-br from-yellow-50 to-orange-50 dark:from-yellow-900 dark:to-orange-900 p-6 rounded-xl border border-yellow-200 dark:border-yellow-700">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-yellow-800">Quizzes Done</p>
-              <p className="text-3xl font-bold text-yellow-900 mt-2">{completedQuizzes.length}</p>
+              <p className="text-sm font-medium text-yellow-800 dark:text-yellow-300">Quizzes Done</p>
+              <p className="text-3xl font-bold text-yellow-900 dark:text-white mt-2">{completedQuizzes.length}</p>
             </div>
             <Brain className="w-8 h-8 text-yellow-600" />
           </div>
@@ -109,51 +107,47 @@ export default function Progress() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Weekly Progress Chart */}
-        <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+        {/* Weekly Progress */}
+        <div className="bg-white dark:bg-gray-900 p-6 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
           <div className="flex items-center justify-between mb-6">
-            <h3 className="text-lg font-semibold text-gray-900">Weekly Progress</h3>
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Weekly Progress</h3>
             <TrendingUp className="w-5 h-5 text-green-500" />
           </div>
-          
           <div className="space-y-4">
             {weeklyProgress.map((week, index) => (
-              <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+              <div key={index} className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
                 <div>
-                  <p className="font-medium text-gray-900">{week.week}</p>
-                  <p className="text-sm text-gray-600">{week.modules} modules • {week.quizzes} quizzes</p>
+                  <p className="font-medium text-gray-900 dark:text-white">{week.week}</p>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">{week.modules} modules • {week.quizzes} quizzes</p>
                 </div>
-                <div className="text-right">
-                  <p className="font-bold text-blue-600">+{week.xp} XP</p>
-                </div>
+                <p className="font-bold text-blue-600">+{week.xp} XP</p>
               </div>
             ))}
           </div>
         </div>
 
         {/* Skill Progress */}
-        <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+        <div className="bg-white dark:bg-gray-900 p-6 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
           <div className="flex items-center justify-between mb-6">
-            <h3 className="text-lg font-semibold text-gray-900">Skill Development</h3>
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Skill Development</h3>
             <Target className="w-5 h-5 text-blue-500" />
           </div>
-          
           <div className="space-y-4">
             {skillProgress.map((skill, index) => (
               <div key={index}>
                 <div className="flex justify-between items-center mb-2">
-                  <span className="font-medium text-gray-700">{skill.skill}</span>
+                  <span className="font-medium text-gray-700 dark:text-gray-300">{skill.skill}</span>
                   <div className="flex items-center space-x-2">
-                    <span className="text-sm text-green-600 font-medium">{skill.change}</span>
-                    <span className="text-sm text-gray-500">{skill.current}% / {skill.target}%</span>
+                    <span className="text-sm text-green-600">{skill.change}</span>
+                    <span className="text-sm text-gray-500 dark:text-gray-400">{skill.current}% / {skill.target}%</span>
                   </div>
                 </div>
-                <div className="w-full bg-gray-200 rounded-full h-3">
-                  <div 
+                <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-3">
+                  <div
                     className="bg-gradient-to-r from-blue-500 to-purple-600 h-3 rounded-full relative"
                     style={{ width: `${(skill.current / skill.target) * 100}%` }}
                   >
-                    <div className="absolute right-0 top-0 w-1 h-3 bg-white rounded-full opacity-50"></div>
+                    <div className="absolute right-0 top-0 w-1 h-3 bg-white dark:bg-gray-200 rounded-full opacity-50"></div>
                   </div>
                 </div>
               </div>
@@ -163,33 +157,32 @@ export default function Progress() {
       </div>
 
       {/* Achievements */}
-      <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+      <div className="bg-white dark:bg-gray-900 p-6 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
         <div className="flex items-center justify-between mb-6">
-          <h3 className="text-lg font-semibold text-gray-900">Achievements & Badges</h3>
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Achievements & Badges</h3>
           <Award className="w-5 h-5 text-yellow-500" />
         </div>
-        
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {achievements.map((achievement, index) => (
             <div
               key={index}
               className={`p-4 rounded-lg border-2 transition-all ${
                 achievement.earned
-                  ? 'border-yellow-300 bg-yellow-50'
-                  : 'border-gray-200 bg-gray-50 opacity-60'
+                  ? 'border-yellow-300 bg-yellow-50 dark:bg-yellow-900'
+                  : 'border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 opacity-60'
               }`}
             >
               <div className="flex items-start space-x-3">
                 <div className="text-2xl">{achievement.icon}</div>
                 <div className="flex-1">
-                  <h4 className={`font-semibold ${achievement.earned ? 'text-yellow-800' : 'text-gray-600'}`}>
+                  <h4 className={`font-semibold ${achievement.earned ? 'text-yellow-800 dark:text-yellow-300' : 'text-gray-600 dark:text-gray-400'}`}>
                     {achievement.name}
                   </h4>
-                  <p className={`text-sm ${achievement.earned ? 'text-yellow-700' : 'text-gray-500'}`}>
+                  <p className={`text-sm ${achievement.earned ? 'text-yellow-700 dark:text-yellow-400' : 'text-gray-500 dark:text-gray-400'}`}>
                     {achievement.description}
                   </p>
                   {achievement.earned && achievement.date && (
-                    <p className="text-xs text-yellow-600 mt-1">
+                    <p className="text-xs text-yellow-600 dark:text-yellow-400 mt-1">
                       Earned on {new Date(achievement.date).toLocaleDateString()}
                     </p>
                   )}
@@ -218,7 +211,9 @@ export default function Progress() {
               <div
                 key={day}
                 className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${
-                  day <= 5 ? 'bg-yellow-400 text-orange-800' : 'bg-orange-300 text-orange-600'
+                  day <= 5
+                    ? 'bg-yellow-400 text-orange-800'
+                    : 'bg-orange-300 text-orange-600'
                 }`}
               >
                 {day <= 5 ? '✓' : day}
