@@ -11,7 +11,7 @@ export default function LoadingSpinner() {
           </div>
           <div className="absolute inset-0 w-16 h-16 border-4 border-white border-opacity-30 rounded-full animate-pulse mx-auto"></div>
         </div>
-        <h2 className="text-xl font-semibold text-white mb-2">Loading SkillForge</h2>
+        <h2 className="text-xl font-semibold text-white mb-2">Loading SkillArise</h2>
         <p className="text-blue-100">Preparing your learning experience...</p>
       </div>
     </div>
