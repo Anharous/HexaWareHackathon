@@ -82,18 +82,36 @@ const signup = async (email: string, password: string, name: string): Promise<bo
   }
 };
 
+
+
   const logout = () => {
     setUser(null);
     localStorage.removeItem('user');
   };
 
-  const updateUser = (updates: Partial<User>) => {
-    if (user) {
-      const updatedUser = { ...user, ...updates };
-      setUser(updatedUser);
-      localStorage.setItem('user', JSON.stringify(updatedUser));
-    }
-  };
+  // AuthContext.tsx
+
+const updateUser = async (updatedData: Partial<User>) => {
+  try {
+    if (!user) {
+      console.error("User is not logged in");
+    return;
+  }
+    const res = await fetch(`http://localhost:4000/api/users/${user._id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(updatedData)
+    });
+
+    if (!res.ok) throw new Error('Failed to update user in database');
+
+    const updatedUser = await res.json();
+    setUser(updatedUser); // Update frontend state with new user from DB
+  } catch (error) {
+    console.error('Error updating user:', error);
+  }
+};
+
 
   return (
     <AuthContext.Provider value={{ user, login, signup, logout, updateUser, loading }}>

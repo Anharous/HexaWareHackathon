@@ -3,7 +3,7 @@ from datetime import timedelta
 import google.generativeai as genai
 
 # Configure Gemini API
-gemini_api_key = "AIzaSyDd2XRE-1pwXynl1jI7XPrQ8LJTcI-xsu4"
+gemini_api_key = "AIzaSyC1qPts9X8D5Dz1IfltMa4l2aI2cS_94qg"
 genai.configure(api_key=gemini_api_key)
 
 app = Flask(__name__)
@@ -195,8 +195,7 @@ HTML_TEMPLATE = """
 
     <div class='chatbot-window' id='chatbotWindow'>
         <div class='chatbot-header'>
-            <button class="clear-btn" id="clearBtn" title="Clear Chat">🧹</button>
-            <div class="header-title">AmiBot ✨ — Your AI Buddy</div>
+            <div class="header-title">Mentora✨ — Your AI Buddy</div>
             <button class="close-btn" id="closeBtn" title="Close Chat">×</button>
         </div>
         <div class='chatbot-body' id='chatContent'>

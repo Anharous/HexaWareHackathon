@@ -6,6 +6,7 @@ import Analytics from './Analytics';
 import Reports from './Reports';
 import SystemSettings from './SystemSettings';
 import Chatbot from '../dashboard/Chatbot';
+import AdminQuizCreation from './AdminQuizCreation';
 
 export default function AdminDashboard() {
   const [activeSection, setActiveSection] = useState('analytics');
@@ -36,6 +37,8 @@ export default function AdminDashboard() {
         return <Reports />;
       case 'settings':
         return <SystemSettings />;
+      case 'quizzes':
+        return <AdminQuizCreation />;
       default:
         return <Analytics />;
     }

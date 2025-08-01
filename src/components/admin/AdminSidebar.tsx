@@ -6,7 +6,8 @@ import {
   FileText,
   Settings,
   LogOut,
-  Shield
+  Shield,
+  ListChecks,
 } from 'lucide-react';
 
 interface AdminSidebarProps {
@@ -20,6 +21,7 @@ export default function AdminSidebar({ activeSection, setActiveSection }: AdminS
   const menuItems = [
     { id: 'analytics', label: 'Analytics', icon: BarChart3 },
     { id: 'users', label: 'User Management', icon: Users },
+    { id: 'quizzes', label: 'Manage Quizzes', icon: ListChecks }, 
     { id: 'reports', label: 'Reports', icon: FileText },
     { id: 'settings', label: 'System Settings', icon: Settings },
   ];

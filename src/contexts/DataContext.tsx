@@ -4,6 +4,8 @@ import { useAuth } from './AuthContext';
 interface Quiz {
   id: string;
   title: string;
+  role: string; // NEW
+  skills: string[];
   questions: Array<{
     id: string;
     question: string;
@@ -12,6 +14,7 @@ interface Quiz {
     difficulty: 'easy' | 'medium' | 'hard';
     skill: string;
   }>;
+  timeLimit: number; 
   completed: boolean;
   score?: number;
 }
@@ -55,6 +58,7 @@ interface DataContextType {
   updateQuizScore: (quizId: string, score: number) => void;
   completeModule: (moduleId: string) => void;
   getRecommendedModules: (skills: string[]) => LearningModule[];
+  getRelevantQuizzes: (role: string, skills: string[]) => Quiz[]; 
   userStats: UserStats | null;
   activities: Activity[];
 }
@@ -114,6 +118,11 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
     );
   };
 
+  const getRelevantQuizzes = (role: string, skills: string[]) => {
+    return quizzes.filter(quiz =>
+      quiz.role === role && quiz.skills.some(skill => skills.includes(skill))
+    );
+  };
   return (
     <DataContext.Provider value={{
       quizzes,
@@ -122,6 +131,7 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
       updateQuizScore,
       completeModule,
       getRecommendedModules,
+      getRelevantQuizzes,
       userStats,
       activities
     }}>
