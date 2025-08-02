@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import { useData } from '../../contexts/DataContext';
 import {
@@ -22,7 +22,7 @@ export default function Quiz() {
   const [showResult, setShowResult] = useState(false);
   const [timeLeft, setTimeLeft] = useState(300);
   const [quizStarted, setQuizStarted] = useState(false);
-  const currentQuiz = quizzes.find(q => q.id === selectedQuiz);
+  const currentQuiz = quizzes.find(q => q._id === selectedQuiz);
 
   useEffect(() => {
     if (quizStarted && timeLeft > 0 && !showResult) {
@@ -40,13 +40,15 @@ export default function Quiz() {
   };
 
   const startQuiz = (quizId: string) => {
-    const quiz = quizzes.find(q => q.id === quizId);
+    const quiz = quizzes.find(q => q._id === quizId);
+    if (!quiz) return;
     setSelectedQuiz(quizId);
     setCurrentQuestion(0);
     setAnswers([]);
     setSelectedAnswer(null);
     setShowResult(false);
-    setTimeLeft((quiz?.timeLimit || 5) * 60);
+    const duration = typeof quiz.timeLimit === 'number' ? quiz.timeLimit : 5;
+    setTimeLeft(duration * 60);
     setQuizStarted(true);
   };
 
@@ -55,8 +57,10 @@ export default function Quiz() {
   };
 
   const handleNextQuestion = () => {
+    console.log("Next button clicked. selectedAnswer:", selectedAnswer);
     if (selectedAnswer !== null) {
       const newAnswers = [...answers, selectedAnswer];
+       console.log("Adding answer:", selectedAnswer, "All answers:", newAnswers);
       setAnswers(newAnswers);
 
       if (currentQuestion < (currentQuiz?.questions.length || 0) - 1) {
@@ -64,9 +68,11 @@ export default function Quiz() {
         setSelectedAnswer(null);
       } else {
         handleQuizComplete(newAnswers);
+        
       }
     }
   };
+  
 
   const handleQuizComplete = (finalAnswers = answers) => {
     if (!currentQuiz) return;
@@ -78,7 +84,7 @@ export default function Quiz() {
     const score = Math.round((correctAnswers / currentQuiz.questions.length) * 100);
     const xpGained = Math.max(50, score);
 
-    updateQuizScore(currentQuiz.id, score);
+    updateQuizScore(currentQuiz._id, score);
     updateUser({
       xp: (user?.xp || 0) + xpGained,
       level: Math.floor(((user?.xp || 0) + xpGained) / 1000) + 1
@@ -187,11 +193,11 @@ export default function Quiz() {
                 ))}
               </div>
 
-              <div className="flex justify-end">
+              <div className="flex justify-center">
                 <button
                   onClick={handleNextQuestion}
                   disabled={selectedAnswer === null}
-                  className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center space-x-2"
+                  className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center space-x-2 "
                 >
                   <span>
                     {currentQuestion < (currentQuiz?.questions.length || 0) - 1 ? 'Next Question' : 'Complete Quiz'}
@@ -302,7 +308,7 @@ export default function Quiz() {
       {/* Available Quizzes */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {quizzes.map((quiz) => (
-          <div key={quiz.id} className="bg-white p-6 rounded-xl shadow-sm border border-gray-200 hover:shadow-md transition-all">
+          <div key={quiz._id} className="bg-white p-6 rounded-xl shadow-sm border border-gray-200 hover:shadow-md transition-all">
             <div className="flex items-start justify-between mb-4">
               <div>
                 <h3 className="text-lg font-semibold text-gray-900 mb-2">{quiz.title}</h3>
@@ -332,18 +338,21 @@ export default function Quiz() {
                 {['easy', 'medium', 'hard'].map((difficulty) => {
                   const count = quiz.questions.filter(q => q.difficulty === difficulty).length;
                   if (count === 0) return null;
-                  
                   return (
-                    <span key={difficulty} className={`px-2 py-1 rounded-full text-xs font-medium ${getDifficultyColor(difficulty)}`}>
+                     <span
+                      key={`${quiz._id}-${difficulty}`} // ✅ Make key unique to the quiz
+                      className={`px-2 py-1 rounded-full text-xs font-medium ${getDifficultyColor(difficulty)}`}
+                      >
                       {count} {difficulty}
                     </span>
+                    
                   );
                 })}
               </div>
             </div>
 
             <button
-              onClick={() => startQuiz(quiz.id)}
+              onClick={() => startQuiz(quiz._id)}
               className="w-full px-4 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg hover:from-blue-700 hover:to-purple-700 transition-all flex items-center justify-center space-x-2"
             >
               <Brain className="w-5 h-5" />

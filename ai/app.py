@@ -214,7 +214,6 @@ HTML_TEMPLATE = """
         const chatWindow = document.getElementById("chatbotWindow");
         const toggleBtn = document.getElementById("toggleBtn");
         const closeBtn = document.getElementById("closeBtn");
-        const clearBtn = document.getElementById("clearBtn");
         const chatContent = document.getElementById("chatContent");
 
         toggleBtn.addEventListener("click", () => {
@@ -233,9 +232,6 @@ HTML_TEMPLATE = """
             clearChat();
         });
 
-        clearBtn.addEventListener("click", () => {
-            clearChat();
-        });
 
         function clearChat(){
             fetch('/clear_chat', {method: 'POST'}).then(() => {
