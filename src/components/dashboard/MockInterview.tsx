@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import {
   Video,
@@ -25,6 +25,12 @@ export default function MockInterview() {
   const [responses, setResponses] = useState<string[]>([]);
   const [currentResponse, setCurrentResponse] = useState('');
   const videoRef = useRef<HTMLVideoElement>(null);
+  const streamRef = useRef<MediaStream | null>(null);
+  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
+  const [recordedChunks, setRecordedChunks] = useState<Blob[]>([]);
+  const [recordedVideoURL, setRecordedVideoURL] = useState<string | null>(null);
+  const [interviewCompleted, setInterviewCompleted] = useState(false);
+
 
   const interviewQuestions = [
     {
@@ -59,20 +65,79 @@ export default function MockInterview() {
       startCamera();
     }
   }, [interviewStarted, videoEnabled]);
-
-  const startCamera = async () => {
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({
-        video: videoEnabled,
-        audio: audioEnabled
-      });
-      if (videoRef.current) {
-        videoRef.current.srcObject = stream;
-      }
-    } catch (error) {
-      console.error('Error accessing camera:', error);
+  
+const startCamera = async () => {
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+    if (videoRef.current) {
+      videoRef.current.srcObject = stream;
     }
-  };
+    streamRef.current = stream;
+
+    const recorder = new MediaRecorder(stream);
+    const chunks: Blob[] = [];
+
+    recorder.ondataavailable = (e) => {
+      if (e.data.size > 0) {
+        chunks.push(e.data);
+      }
+    };
+
+    recorder.onstop = () => {
+      const blob = new Blob(chunks, { type: "video/webm" });
+      const url = URL.createObjectURL(blob);
+      setRecordedVideoURL(url);
+    };
+
+    mediaRecorderRef.current = recorder;
+    recorder.start();
+    console.log("📹 Recording started");
+
+  } catch (err) {
+    console.error("❌ Error accessing camera or microphone:", err);
+  }
+};
+
+const stopCamera = () => {
+  console.log("🛑 stopCamera() triggered");
+
+  if (videoRef.current && videoRef.current.srcObject) {
+    const stream = videoRef.current.srcObject as MediaStream;
+
+    if (stream && stream.getTracks) {
+      const tracks = stream.getTracks();
+      console.log("📷 Tracks before stop:", tracks.map(t => `${t.kind}: ${t.readyState}`));
+      tracks.forEach((track) => {
+        track.stop();
+      });
+
+      console.log("📷 Tracks after stop:", stream.getTracks().map(t => `${t.kind}: ${t.readyState}`));
+    }
+
+    // Clear the stream reference from the video element
+    videoRef.current.srcObject = null;
+    console.log("🎥 videoRef srcObject cleared");
+  }
+
+  // Ensure all global references to the stream are also null
+  streamRef.current = null;
+};
+
+
+
+
+
+  const handleRecordingToggle = () => {
+  if (isRecording) {
+    mediaRecorderRef.current?.stop();
+  } else if (streamRef.current) {
+    // Restart camera if needed, with isRecording = true
+    if (!interviewCompleted) 
+      startCamera();
+  }
+
+  setIsRecording(!isRecording);
+};
 
   const startInterview = () => {
     setInterviewStarted(true);
@@ -94,6 +159,10 @@ export default function MockInterview() {
   };
 
   const completeInterview = () => {
+     if (mediaRecorderRef.current && mediaRecorderRef.current.state === "recording") {
+    mediaRecorderRef.current.stop(); // ⬅ ensure recording is stopped
+  }
+    stopCamera(); 
     setInterviewStarted(false);
     setShowFeedback(true);
     updateUser({
@@ -103,12 +172,78 @@ export default function MockInterview() {
   };
 
   const resetInterview = () => {
+    stopCamera(); 
     setInterviewStarted(false);
     setShowFeedback(false);
     setCurrentQuestion(0);
     setResponses([]);
     setCurrentResponse('');
   };
+  const toggleVideo = () => {
+  setVideoEnabled((prev) => {
+    const newVal = !prev;
+    if (!newVal) {
+      stopCamera();
+    } else if (interviewStarted) {
+      startCamera();
+    }
+    return newVal;
+  });
+};
+const handleNextOrComplete = async () => {
+  if (currentQuestion < interviewQuestions.length - 1) {
+    nextQuestion();
+  } else {
+    // Stop recording first
+    if (mediaRecorderRef.current?.state === "recording") 
+      await stopRecording(); // Make sure this returns a Promise
+    // Then complete the interview
+    
+    setInterviewCompleted(true);
+    nextQuestion();
+    stopCamera();
+  }
+};
+
+const toggleAudio = () => {
+  setAudioEnabled((prev) => {
+    const newVal = !prev;
+    if (streamRef.current) {
+      streamRef.current.getAudioTracks().forEach(track => {
+        track.enabled = newVal;;
+      });
+    }
+    return newVal;
+  });
+};
+const stopRecording = () => {
+  if (
+    mediaRecorderRef.current &&
+    mediaRecorderRef.current.state === "recording"
+  ) {
+    console.log("🎬 Stopping MediaRecorder...");
+    mediaRecorderRef.current.stop();
+  } else {
+    console.warn("⚠️ MediaRecorder is inactive or not available.");
+  }
+};
+
+
+
+useEffect(() => {
+  if (interviewCompleted) {
+     console.log("🎤 Interview completed. Stopping camera & recording...");
+    //stopRecording();
+    stopCamera(); 
+  }
+}, [interviewCompleted]);
+
+useEffect(() => {
+  return () => {
+    console.log("🧼 Component unmounting, cleaning up camera");
+    stopCamera();
+  };
+}, []);
 
   const feedbackData = {
     overallScore: 85,
@@ -157,7 +292,7 @@ export default function MockInterview() {
             <p className="text-purple-700 dark:text-purple-400">Communication Clarity</p>
           </div>
         </div>
-
+        
         <div className={`${cardBg} p-6 rounded-xl shadow-sm border ${borderColor}`}>
           <h3 className={`text-lg font-semibold ${textPrimary} mb-4`}>Skills Breakdown</h3>
           <div className="space-y-4">
@@ -195,14 +330,27 @@ export default function MockInterview() {
           </div>
         </div>
 
-        <div className="text-center">
+        <div className="text-center flex justify-center gap-5">
           <button
             onClick={resetInterview}
-            className="px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg hover:from-blue-700 hover:to-purple-700 transition-all flex items-center space-x-2 mx-auto"
+            className="px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg hover:from-blue-700 hover:to-purple-700 transition-all flex items-center space-x-2 "
           >
             <RotateCcw className="w-5 h-5" />
             <span>Take Another Interview</span>
           </button>
+          {recordedVideoURL && (
+          <button
+            onClick={() => {
+              const a = document.createElement("a");
+              a.href = recordedVideoURL;
+              a.download = "mock_interview.webm";
+              a.click();
+            }}
+                      className="px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg hover:from-blue-700 hover:to-purple-700 transition-all flex items-center space-x-2 "
+                    >
+            Download Interview
+          </button>
+        )}
         </div>
       </div>
     );
@@ -212,7 +360,7 @@ export default function MockInterview() {
     return (
       <div className="max-w-4xl mx-auto space-y-6">
         <div className={`${cardBg} rounded-xl shadow-sm border ${borderColor} p-6`}>
-          <div className="flex items-center justify-between mb-6">
+          <div className="">
             <div>
               <h2 className={`text-2xl font-bold ${textPrimary}`}>AI Mock Interview</h2>
               <p className={textSecondary}>
@@ -221,17 +369,19 @@ export default function MockInterview() {
             </div>
             <div className="flex items-center space-x-2">
               <button
-                onClick={() => setVideoEnabled(!videoEnabled)}
+                onClick={toggleVideo}
                 className={`p-2 rounded-lg ${videoEnabled ? 'bg-blue-100 text-blue-600 dark:bg-blue-800 dark:text-blue-300' : 'bg-red-100 text-red-600 dark:bg-red-800 dark:text-red-300'}`}
               >
                 {videoEnabled ? <Video className="w-5 h-5" /> : <VideoOff className="w-5 h-5" />}
               </button>
+
               <button
-                onClick={() => setAudioEnabled(!audioEnabled)}
+                onClick={toggleAudio}
                 className={`p-2 rounded-lg ${audioEnabled ? 'bg-blue-100 text-blue-600 dark:bg-blue-800 dark:text-blue-300' : 'bg-red-100 text-red-600 dark:bg-red-800 dark:text-red-300'}`}
               >
                 {audioEnabled ? <Mic className="w-5 h-5" /> : <MicOff className="w-5 h-5" />}
               </button>
+
             </div>
           </div>
 
@@ -268,7 +418,7 @@ export default function MockInterview() {
 
               <div className="flex justify-center space-x-4">
                 <button
-                  onClick={() => setIsRecording(!isRecording)}
+                   onClick={handleRecordingToggle}
                   className={`px-4 py-2 rounded-lg flex items-center space-x-2 ${
                     isRecording
                       ? 'bg-red-600 text-white hover:bg-red-700'
@@ -310,7 +460,7 @@ export default function MockInterview() {
               </div>
 
               <button
-                onClick={nextQuestion}
+                onClick={handleNextOrComplete}
                 className="w-full px-4 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg hover:from-blue-700 hover:to-purple-700 transition-all flex items-center justify-center space-x-2"
               >
                 <span>
