@@ -8,7 +8,10 @@ import Quiz from './Quiz';
 import MockInterview from './MockInterview';
 import Progress from './Progress';
 import Profile from './Profile';
+import Guild from './Guild';
+import StudyChat from './StudyChat';
 import Chatbot from './Chatbot';
+
 
 export default function Dashboard() {
   const [activeSection, setActiveSection] = useState('overview');
@@ -44,6 +47,10 @@ export default function Dashboard() {
         return <Progress />;
       case 'profile':
         return <Profile />;
+      case 'guild':
+        return <Guild />;
+      case 'studychat':
+        return <StudyChat />;
       default:
         return <Overview />;
     }

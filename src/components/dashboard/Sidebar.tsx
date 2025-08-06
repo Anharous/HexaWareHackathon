@@ -8,7 +8,9 @@ import {
   TrendingUp,
   User,
   LogOut,
-  Award
+  Award,
+  MessageSquare,
+  Bot
 } from 'lucide-react';
 
 interface SidebarProps {
@@ -26,6 +28,8 @@ export default function Sidebar({ activeSection, setActiveSection }: SidebarProp
     { id: 'quiz', label: 'Adaptive Quiz', icon: Brain },
     { id: 'interview', label: 'Mock Interview', icon: Video },
     { id: 'progress', label: 'Progress', icon: TrendingUp },
+    { id: 'guild', label: 'Guild Chat', icon: MessageSquare },
+    { id: 'studychat', label: 'Study AI', icon: Bot },
     { id: 'profile', label: 'Profile', icon: User },
   ];
 

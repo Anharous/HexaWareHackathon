@@ -8,7 +8,7 @@ from flask_cors import CORS
 from skills_db import SKILLS_DB
 
 # Configure Gemini API
-genai.configure(api_key="AIzaSyDd2XRE-1pwXynl1jI7XPrQ8LJTcI-xsu4")
+genai.configure(api_key="AIzaSyAyRQXzKmWkV1ElA7uajNix_MN85xhXDds")
 
 
 
