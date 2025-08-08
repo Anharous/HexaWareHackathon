@@ -3,7 +3,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import { Send, Users, Hash, UserPlus } from 'lucide-react';
 import io from 'socket.io-client';
 
-const socket = io('http://localhost:4000'); // Replace with backend URL in production
+const socket = io('http://localhost:4001'); // Replace with backend URL in production
 
 interface Message {
   _id?: string;
@@ -63,7 +63,7 @@ export default function Guild() {
 
   const fetchGuilds = async () => {
     try {
-      const res = await fetch('http://localhost:4000/api/guilds');
+      const res = await fetch('http://localhost:4001/api/guilds');
       const data = await res.json();
       setGuilds(data);
       if (data.length > 0 && !selectedGuild) {
@@ -78,7 +78,7 @@ export default function Guild() {
 
   const fetchMessages = async (guildId: string) => {
     try {
-      const res = await fetch(`http://localhost:4000/api/guilds/${guildId}/messages`);
+      const res = await fetch(`http://localhost:4001/api/guilds/${guildId}/messages`);
       const data = await res.json();
       setMessages(data);
     } catch (error) {
@@ -90,7 +90,7 @@ export default function Guild() {
     if (!messageInput.trim() || !selectedGuild || !user) return;
 
     try {
-      const res = await fetch(`http://localhost:4000/api/guilds/${selectedGuild._id}/messages`, {
+      const res = await fetch(`http://localhost:4001/api/guilds/${selectedGuild._id}/messages`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -118,7 +118,7 @@ export default function Guild() {
     if (!user) return;
 
     try {
-      const res = await fetch(`http://localhost:4000/api/guilds/${guildId}/join`, {
+      const res = await fetch(`http://localhost:4001/api/guilds/${guildId}/join`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ userId: user._id })

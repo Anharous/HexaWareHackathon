@@ -114,7 +114,7 @@ export default function StudyChat() {
   const checkAIHealth = async () => {
     try {
       setConnectionStatus('checking');
-      const response = await fetch('http://localhost:4000/api/ai/health');
+      const response = await fetch('http://localhost:4001/api/ai/health');
       const data = await response.json();
       setConnectionStatus(data.healthy ? 'connected' : 'disconnected');
     } catch (error) {
@@ -158,7 +158,7 @@ export default function StudyChat() {
         historyCount: requestBody.conversationHistory.length
       });
 
-      const response = await fetch('http://localhost:4000/api/ai/chat', {
+      const response = await fetch('http://localhost:4001/api/ai/chat', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -200,7 +200,7 @@ export default function StudyChat() {
       if (error instanceof Error) {
         if (error.message.includes('fetch')) {
           errorMessage = 'Connection error. Please check if the server is running.';
-          aiResponseContent = 'I cannot connect to the server. Please make sure the backend is running on port 4000.';
+          aiResponseContent = 'I cannot connect to the server. Please make sure the backend is running on port 4001.';
           setConnectionStatus('disconnected');
         } else if (error.message.includes('API_KEY')) {
           errorMessage = 'AI service configuration error.';

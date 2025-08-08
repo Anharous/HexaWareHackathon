@@ -29,7 +29,7 @@ export default function AdminQuizCreation() {
 
   const fetchQuizzes = async () => {
     try {
-      const res = await axios.get<Quiz[]>('http://localhost:4000/api/quizzes');
+      const res = await axios.get<Quiz[]>('http://localhost:4001/api/quizzes');
       setQuizzes(res.data);
       console.log("Fetching quizzes after delete/update...");
     } catch (err) {
@@ -70,11 +70,11 @@ export default function AdminQuizCreation() {
     const quiz = { title, role, skill, questions, timeLimit };
     try {
       if (editingId) {
-        await axios.put(`http://localhost:4000/api/quizzes/${editingId}`, quiz);
+        await axios.put(`http://localhost:4001/api/quizzes/${editingId}`, quiz);
         alert('Quiz updated!');
         setEditingId(null);
       } else {
-        await axios.post(`http://localhost:4000/api/quizzes`, quiz);
+        await axios.post(`http://localhost:4001/api/quizzes`, quiz);
         alert('Quiz created!');
       }
       resetForm();
@@ -107,7 +107,7 @@ export default function AdminQuizCreation() {
     if (window.confirm('Delete this quiz?')) {
       try {
         console.log("Deleting quiz with ID:", id);
-        await axios.delete(`http://localhost:4000/api/quizzes/${id}`);
+        await axios.delete(`http://localhost:4001/api/quizzes/${id}`);
         alert("Quiz deleted successfully!");
         fetchQuizzes();
       } catch (error) {

@@ -3,6 +3,8 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { useAuth } from './AuthContext';
 
+const API_BASE_URL = 'http://localhost:4001'; 
+
 interface Quiz {
   _id: string; // <-- added for MongoDB support
   id: string;
@@ -226,38 +228,71 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     const fetchQuizzes = async () => {
-      try {
-        const res = await fetch('/api/quizzes');
+       try {
+      const res = await fetch(`${API_BASE_URL}/api/quizzes`);
+        if (!res.ok) {
+          throw new Error(`HTTP error! status: ${res.status}`);
+        }
         const data = await res.json();
         setQuizzes(data);
       } catch (err) {
         console.error('Failed to fetch quizzes:', err);
+        // Set empty array as fallback to prevent app crash
+        setQuizzes([]);
       }
     };
 
     fetchQuizzes();
   }, []);
 
+  // Fixed: Use correct API base URL and add error handling
   useEffect(() => {
     const fetchData = async () => {
       if (!user?._id) return;
 
       try {
-        const statsRes = await fetch(`/api/overview/${user._id}/stats`);
-        const statsData = await statsRes.json();
-        setUserStats({
-          xp: statsData.xp,
-          level: statsData.level,
-          skillGaps: statsData.skillGaps || [],
-          completedModules: statsData.completedModules,
-          completedQuizzes: statsData.completedQuizzes
-        });
+        // Fetch user stats
+        const statsRes = await fetch(`${API_BASE_URL}/api/overview/${user._id}/stats`);
+        if (statsRes.ok) {
+          const statsData = await statsRes.json();
+          setUserStats({
+            xp: statsData.xp || 0,
+            level: statsData.level || 1,
+            skillGaps: statsData.skillGaps || [],
+            completedModules: statsData.completedModules || 0,
+            completedQuizzes: statsData.completedQuizzes || 0
+          });
+        } else {
+          console.warn('Failed to fetch user stats, using defaults');
+          setUserStats({
+            xp: 0,
+            level: 1,
+            skillGaps: [],
+            completedModules: 0,
+            completedQuizzes: 0
+          });
+        }
 
-        const activityRes = await fetch(`/api/overview/${user._id}/activities`);
-        const activityData = await activityRes.json();
-        setActivities(activityData);
+        // Fetch activities
+        const activityRes = await fetch(`${API_BASE_URL}/api/overview/${user._id}/activities`);
+        if (activityRes.ok) {
+          const activityData = await activityRes.json();
+          setActivities(activityData);
+        } else {
+          console.warn('Failed to fetch activities, using empty array');
+          setActivities([]);
+        }
       } catch (err) {
         console.error('Failed to fetch overview data:', err);
+        // Set defaults to prevent app crash
+        setUserStats({
+          xp: 0,
+          level: 1,
+          skillGaps: [],
+          completedModules: 0,
+          completedQuizzes: 0
+        });
+        setActivities([]);
       }
     };
 
@@ -619,11 +654,14 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
 
     // Persist to MongoDB via backend API
     try {
-      await fetch(`http://localhost:4000/api/quizzes/${quizId}`, {
+       const response = await fetch(`${API_BASE_URL}/api/quizzes/${quizId}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ completed: true, score }),
       });
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
     } catch (error) {
       console.error('Failed to update quiz score in database:', error);
     }
