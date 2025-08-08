@@ -11,7 +11,7 @@ import Profile from './Profile';
 import Guild from './Guild';
 import StudyChat from './StudyChat';
 import Chatbot from './Chatbot';
-
+import MentorBooking from './MentorBooking';
 
 export default function Dashboard() {
   const [activeSection, setActiveSection] = useState('overview');
@@ -43,6 +43,8 @@ export default function Dashboard() {
         return <Quiz />;
       case 'interview':
         return <MockInterview />;
+      case 'calendar':   
+        return <MentorBooking />;   
       case 'progress':
         return <Progress />;
       case 'profile':

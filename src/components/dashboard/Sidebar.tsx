@@ -10,7 +10,8 @@ import {
   LogOut,
   Award,
   MessageSquare,
-  Bot
+  Bot,
+  CalendarCheck
 } from 'lucide-react';
 
 interface SidebarProps {
@@ -27,6 +28,7 @@ export default function Sidebar({ activeSection, setActiveSection }: SidebarProp
     { id: 'learning', label: 'Learning Path', icon: BookOpen },
     { id: 'quiz', label: 'Adaptive Quiz', icon: Brain },
     { id: 'interview', label: 'Mock Interview', icon: Video },
+    { id: 'calendar', label: 'MentorBooking', icon: CalendarCheck },
     { id: 'progress', label: 'Progress', icon: TrendingUp },
     { id: 'guild', label: 'Guild Chat', icon: MessageSquare },
     { id: 'studychat', label: 'Study AI', icon: Bot },
