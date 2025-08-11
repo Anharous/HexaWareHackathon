@@ -49,5 +49,12 @@ io.on("connection", (socket) => {
   });
 });
 
+const notificationsRouter = require("./routes/notifications");
+app.use("/api/notifications", notificationsRouter);
+
+// Start cron job for daily notifications
+const { start } = require('./jobs/dailyNotificationJob');
+start();
+
 const PORT = process.env.PORT || 4001;
 server.listen(PORT, () => console.log(`Server running on port ${PORT}`));
