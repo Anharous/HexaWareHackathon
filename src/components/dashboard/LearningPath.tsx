@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import { useData } from '../../contexts/DataContext';
 import {
@@ -2000,7 +2000,7 @@ export default function LearningPath() {
                     className="flex items-center space-x-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
                   >
                     <PlayCircle className="w-4 h-4" />
-                    <span>Start Learning</span>
+                    <span>Mark as Read</span>
                   </button>
                 )}
                 <button
